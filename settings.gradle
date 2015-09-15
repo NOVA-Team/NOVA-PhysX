@@ -1,0 +1,4 @@
+rootProject.name = 'NOVA-Physics'
+
+include "minecraft:1.8"
+include "minecraft:1.7"

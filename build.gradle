@@ -1,0 +1,51 @@
+plugins {
+	id "java"
+	id "nova.gradle" version "0.2.5"
+	id "maven-publish"
+	id "com.jfrog.artifactory" version "3.1.1"
+}
+
+
+apply from: "https://raw.githubusercontent.com/NOVA-Team/NOVA-Gradle/master/shared-scripts/java.gradle"
+
+dependencies {
+	compile nova(novaVersion)
+}
+
+nova {
+	wrappers {
+		"17" {
+			wrapper "nova.core:NOVA-Core-Wrapper-MC1.7:$novaVersion"
+			runtime project(":minecraft:1.7")
+		}
+
+		"18" {
+			wrapper "nova.core:NOVA-Core-Wrapper-MC1.8:$novaVersion"
+			runtime project(":minecraft:1.8")
+		}
+	}
+}
+
+publishing {
+	publications {
+		main(MavenPublication) {
+			from components.java
+
+			artifactId "NOVA-Physics"
+
+			artifact sourcesJar
+			artifact javadocJar
+
+			pom.withXml(writePom(project.properties))
+		}
+	}
+}
+
+artifactory {
+	publish {
+		defaults {
+			publications("main")
+			publishPom = true
+		}
+	}
+}
