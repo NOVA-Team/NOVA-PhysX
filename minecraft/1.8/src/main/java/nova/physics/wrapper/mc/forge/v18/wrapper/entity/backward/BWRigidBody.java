@@ -1,9 +1,10 @@
-package nova.core.wrapper.mc18.wrapper.entity.forward;
+package nova.physics.wrapper.mc.forge.v18.wrapper.entity.backward;
 
 import nova.core.entity.Entity;
 import nova.core.entity.component.RigidBody;
 import nova.core.util.math.RotationUtil;
 import nova.core.util.math.Vector3DUtil;
+import nova.core.wrapper.mc.forge.v18.wrapper.entity.forward.MCEntityTransform;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
@@ -41,7 +42,7 @@ public class BWRigidBody extends RigidBody {
 	private Vector3D netTorque = Vector3D.ZERO;
 
 	private net.minecraft.entity.Entity mcEntity() {
-		return getProvider().get(MCEntityTransform.class).wrapper;
+		return getProvider().components.get(MCEntityTransform.class).wrapper;
 	}
 
 	private Entity entity() {

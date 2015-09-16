@@ -5,7 +5,6 @@ import com.bulletphysics.collision.broadphase.DbvtBroadphase;
 import com.bulletphysics.collision.dispatch.CollisionConfiguration;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
 import com.bulletphysics.collision.dispatch.CollisionFlags;
-import com.bulletphysics.collision.dispatch.CollisionObject;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
@@ -25,8 +24,8 @@ import nova.core.entity.Entity;
 import nova.core.entity.component.RigidBody;
 import nova.core.event.WorldEvent;
 import nova.core.util.shape.Cuboid;
-import nova.core.wrapper.mc18.wrapper.block.world.BWWorld;
-import nova.core.wrapper.mc18.wrapper.entity.forward.MCEntityTransform;
+import nova.core.wrapper.mc.forge.v18.wrapper.block.world.BWWorld;
+import nova.core.wrapper.mc.forge.v18.wrapper.entity.forward.MCEntityTransform;
 import nova.internal.core.Game;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
@@ -98,15 +97,15 @@ public class PhysicsWorld implements Updater {
 	 */
 	public com.bulletphysics.dynamics.RigidBody simulateEntity(Entity entity) {
 		com.bulletphysics.dynamics.RigidBody rigidBody = addEntity(entity);
-		MCEntityTransform mcEntityTransform = entity.get(MCEntityTransform.class);
+		MCEntityTransform mcEntityTransform = entity.components.get(MCEntityTransform.class);
 		getChunk(mcEntityTransform.wrapper.chunkCoordX, mcEntityTransform.wrapper.chunkCoordZ);
 		return rigidBody;
 	}
 
 	private com.bulletphysics.dynamics.RigidBody addEntity(Entity entity) {
-		Collider collider = entity.get(Collider.class);
+		Collider collider = entity.components.get(Collider.class);
 		//TODO: Link the RBs
-		RigidBody rigidBody = entity.get(RigidBody.class);
+		RigidBody rigidBody = entity.components.get(RigidBody.class);
 		Cuboid cuboid = collider.boundingBox.get();
 		Vector3D position = entity.position();
 		Rotation rotation = entity.rotation();

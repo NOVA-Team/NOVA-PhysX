@@ -1,10 +1,10 @@
 apply from: "https://raw.githubusercontent.com/NOVA-Team/NOVA-Gradle/master/shared-scripts/java.gradle"
 
 apply plugin: "com.jfrog.artifactory"
-apply plugin: "com.github.johnrengelman.shadow"
+//apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: "maven-publish"
 
-idea.module.name = "Core-MC-1.7"
+idea.module.name = "Physics-MC-1.7"
 archivesBaseName = "NOVA-Core-Wrapper-MC1.7"
 
 configurations {
@@ -15,7 +15,7 @@ configurations {
 dependencies {
 	fatJar project(":")
 	compile "cz.advel.jbullet:jbullet:20101010"
-	testCompile project(path: ':', configuration: 'wrapperTests')
+	//testCompile project(path: ':', configuration: 'wrapperTests')
 
 	testCompile "junit:junit:4.12"
 	testCompile 'org.assertj:assertj-core:3.0.0'
@@ -63,7 +63,7 @@ artifacts {
 	archives deobfJar
 	archives fatJar
 }
-
+/*
 publishing {
 	publications {
 		main(MavenPublication) {
@@ -89,7 +89,7 @@ publishing {
 			}
 		}
 	}
-}
+}*/
 
 artifactory {
 	publish {
