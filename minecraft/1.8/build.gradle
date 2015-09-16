@@ -5,65 +5,9 @@ apply plugin: "com.jfrog.artifactory"
 apply plugin: "maven-publish"
 
 idea.module.name = "Physics-MC-1.8"
-archivesBaseName = "NOVA-Core-Wrapper-MC1.8"
+archivesBaseName = "NOVA-Physics-Wrapper-MC1.8"
 
-configurations {
-	fatJar
-	compile.extendsFrom fatJar
-}
 
-dependencies {
-	fatJar project(":")
-	compile "cz.advel.jbullet:jbullet:20101010"
-	//testCompile project(path: ':', configuration: 'wrapperTests')
-
-	testCompile "junit:junit:4.12"
-	testCompile 'org.assertj:assertj-core:3.0.0'
-	testRuntime 'org.slf4j:slf4j-simple:1.7.10'
-}
-
-jar {
-	manifest {
-		attributes 'FMLCorePlugin': 'nova.core.wrapper.mc18.NovaMinecraftCore'
-		attributes 'FMLCorePluginContainsFMLMod': 'true'
-		attributes 'FMLAT': 'nova_at.cfg'
-	}
-}
-
-task deobfJar(type: Jar) {
-	from sourceSets.main.output
-	classifier = 'deobf'
-	manifest {
-		attributes 'FMLCorePlugin': 'nova.core.wrapper.mc18.NovaMinecraftCore'
-		attributes 'FMLCorePluginContainsFMLMod': 'true'
-		attributes 'FMLAT': 'nova_at.cfg'
-	}
-}
-
-/**
- * Create fat jar file with all dependencies included.
- */
-task fatJar(type: Jar) {
-	configurations.fatJar.each {dep ->
-		from(project.zipTree(dep)) {
-			exclude 'META-INF', 'META-INF/**'
-		}
-	}
-	with jar
-
-	manifest {
-		attributes 'FMLCorePlugin': 'nova.core.wrapper.mc18.NovaMinecraftCore'
-		attributes 'FMLCorePluginContainsFMLMod': 'true'
-		attributes 'FMLAT': 'nova_at.cfg'
-	}
-	classifier = 'fat'
-}
-
-artifacts {
-	archives deobfJar
-	archives fatJar
-}
-/*
 publishing {
 	publications {
 		main(MavenPublication) {
@@ -73,23 +17,11 @@ publishing {
 
 			artifact sourcesJar
 			artifact javadocJar
-			artifact deobfJar
-			artifact fatJar
 
 			pom.withXml(writePom(project.properties))
-			pom.withXml {xml ->
-				def children = xml.asNode().get("dependencies")[0]
-				for (child in children) {
-					def artifactId = child.get("artifactId")[0].value()[0]
-					if (artifactId.equals("forgeSrc") || artifactId.equals("forgeBin")) {
-						children.remove(child)
-						break;
-					}
-				}
-			}
 		}
 	}
-}*/
+}
 
 artifactory {
 	publish {
@@ -100,36 +32,40 @@ artifactory {
 	}
 }
 
-apply plugin: 'forge'
+artifacts {
+	archives jar
+}
+
+apply plugin: "forge"
 
 minecraft {
 	version = property("minecraft.version") + "-" + property("forge.version")
-	mappings = 'stable_nodoc_16'
+	mappings = "stable_nodoc_16"
 	runDir = "run"
 }
 
-reobf {
-	reobf(fatJar) {spec -> spec.classpath = configurations.compile}
-}
-
-runClient {
-	jvmArgs '-Dfml.coreMods.load=nova.core.wrapper.mc18.NovaMinecraftCore'
-}
-
-runServer {
-	jvmArgs '-Dfml.coreMods.load=nova.core.wrapper.mc18.NovaMinecraftCore'
+dependencies {
+	compile rootProject
+	compile "nova.core:NOVA-Core:${property("nova.version")}"
+	compile "nova.core:NOVA-Core-Wrapper-MC1.8:${property("nova.version")}:deobf"
 }
 
 processResources {
+	// this will ensure that this task is redone when the versions change.
 	inputs.property "version", project.version
 	inputs.property "mcversion", project.minecraft.version
 
+	// replace stuff in mcmod.info, nothing else
 	from(sourceSets.main.resources.srcDirs) {
-		include 'mcmod.info'
-		expand 'version': project.version, 'mcversion': project.minecraft.version
+		include "mcmod.info"
+
+		// replace version and mcversion
+		expand "version": project.version, "mcversion": project.minecraft.version
 	}
 
+	// copy everything else, thats not the mcmod.info
 	from(sourceSets.main.resources.srcDirs) {
-		exclude 'mcmod.info'
+		exclude "mcmod.info"
 	}
 }
+
