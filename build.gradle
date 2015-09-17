@@ -9,18 +9,19 @@ plugins {
 apply from: "https://raw.githubusercontent.com/NOVA-Team/NOVA-Gradle/master/shared-scripts/java.gradle"
 
 dependencies {
-	compile nova(novaVersion)
+	compile nova(property("nova.version"))
+	compile "cz.advel.jbullet:jbullet:20101010"
 }
 
 nova {
 	wrappers {
 		"17" {
-			wrapper "nova.core:NOVA-Core-Wrapper-MC1.7:$novaVersion"
+			wrapper "nova.core:NOVA-Core-Wrapper-MC1.7:${property("nova.version")}"
 			runtime project(":minecraft:1.7")
 		}
 
 		"18" {
-			wrapper "nova.core:NOVA-Core-Wrapper-MC1.8:$novaVersion"
+			wrapper "nova.core:NOVA-Core-Wrapper-MC1.8:${property("nova.version")}"
 			runtime project(":minecraft:1.8")
 		}
 	}

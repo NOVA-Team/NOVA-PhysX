@@ -1,4 +1,4 @@
-package nova.core.wrapper.mc18.wrapper.entity;
+package nova.physics.wrapper.mc.forge.v18.wrapper.entity;
 
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
 import com.bulletphysics.collision.broadphase.DbvtBroadphase;
